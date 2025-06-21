@@ -1,0 +1,42 @@
+name: Java CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+  pull_request:
+    branches:
+      - master
+      - develop
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout mã nguồn
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Thiết lập JDK (Java Development Kit)
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      # Cài đặt dependencies và build với Maven
+      - name: Build with Maven
+        run: mvn clean install -DskipTests
+
+      # Chạy kiểm thử với Maven
+      - name: Run tests
+        run: mvn test
+
+      # Deploy (giả lập, thay bằng lệnh thực tế nếu cần)
+      - name: Deploy to Staging
+        if: github.ref == 'refs/heads/master'
+        run: echo "Deploying to staging environment..."
+        env:
+          DEPLOY_TOKEN: ${{ secrets.CICD_PRACICE }}
